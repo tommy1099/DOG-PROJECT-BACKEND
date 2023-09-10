@@ -20,9 +20,10 @@ app.get("/", cors(), async (req, res) => {
   let fetchedDog;
   await fetch("https://dog.ceo/api/breeds/image/random")
     .then((response) => response.json())
-    .then((data) => (fetchedDog = data.message));
+    .then((data) => (fetchedDog = data.message))
+    .catch((err) => console.log(err));
   res.body = fetchedDog;
-  const dog_db_model = new DOGDB({
+  const dog_db_model = await new DOGDB({
     src: fetchedDog,
   });
   try {
