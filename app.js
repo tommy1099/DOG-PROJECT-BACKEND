@@ -10,10 +10,10 @@ const db = mongoose.connection;
 db.on("error", (err) => console.log(err));
 db.once("open", () => console.log("Connected to DB"));
 
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   next();
-// });
+app.listen(10000, `0.0.0.0`, () => {
+  console.log("listening on port 10000");
+});
+
 app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] }));
 
 app.get("/", cors(), async (req, res) => {
@@ -32,15 +32,11 @@ app.get("/", cors(), async (req, res) => {
     console.log(error.message);
   }
 });
-app.get("/all", async (req, res) => {
+app.get("/all", cors(), async (req, res) => {
   let allDogsArr = [];
   const allDogs = await DOGDB.find();
   allDogs.forEach((dog) => {
     allDogsArr.push(dog.src);
   });
   res.status(201).send(allDogsArr);
-});
-
-app.listen(10000, `0.0.0.0`, () => {
-  console.log("listening on port 10000");
 });
