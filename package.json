@@ -1,7 +1,6 @@
 {
   "name": "dog-project-backend",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "build": "npm install",
@@ -14,5 +13,8 @@
     "express": "^4.18.2",
     "mongoose": "^7.5.0",
     "nodemon": "^3.0.1"
-  }
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "description": ""
 }
