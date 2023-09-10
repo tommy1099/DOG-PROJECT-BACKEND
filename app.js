@@ -35,8 +35,12 @@ app.get("/", cors(), async (req, res) => {
 app.get("/all", cors(), async (req, res) => {
   let allDogsArr = [];
   const allDogs = await DOGDB.find();
-  allDogs.forEach((dog) => {
-    allDogsArr.push(dog.src);
-  });
-  res.status(201).send(allDogsArr);
+  try {
+    allDogs.forEach((dog) => {
+      allDogsArr.push(dog.src);
+    });
+    res.status(201).send(allDogsArr);
+  } catch (error) {
+    console.log(error.message);
+  }
 });
