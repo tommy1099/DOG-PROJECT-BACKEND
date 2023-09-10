@@ -41,6 +41,6 @@ app.get("/all", async (req, res) => {
   res.status(201).send(allDogsArr);
 });
 
-app.listen(`0.0.0.0`, 10000, () => {
+app.listen(10000, `0.0.0.0`, () => {
   console.log("listening on port 10000");
 });
