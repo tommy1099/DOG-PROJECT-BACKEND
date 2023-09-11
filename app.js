@@ -22,19 +22,43 @@ app.listen(10000, `0.0.0.0`, () => {
 
 app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] }));
 
-const fetchFunc = async (fetchedDog) => {
-  await fetch("https://dog.ceo/api/breeds/image/random")
-    .then((response) => response.json())
-    .then((data) => {
-      fetchedDog = data.message;
+// const fetchFunc = async (fetchedDog) => {
+//   await fetch("https://dog.ceo/api/breeds/image/random")
+//     .then((response) => response.json())
+//     .then((data) => {
+//       fetchedDog = data.message;
+//     })
+//     .catch((err) => console.log(err));
+//   return fetchedDog;
+// };
+
+const fetchFunc = new Promise((resolve, reject) => {
+  let fetchedDog;
+  fetchedDog = fetch("https://dog.ceo/api/breeds/image/random")
+    .then((response) => {
+      if (response.ok) {
+        response
+          .json()
+          .then((data) => {
+            resolve(data);
+          })
+          .catch((err) => reject(err));
+      } else {
+        reject(new Error(`HTTP error! status: ${response.status}`));
+      }
     })
-    .catch((err) => console.log(err));
-  return fetchedDog;
-};
+    .catch((err) => reject(err));
+});
 
 app.get("/", cors(), async (req, res) => {
   let fetchedDog;
-  fetchedDog = await fetchFunc(fetchedDog);
+  await fetchFunc
+    .then((data) => {
+      fetchedDog = data.message;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   console.log(fetchedDog);
   try {
     const dog_db_model = new DOGDB({
