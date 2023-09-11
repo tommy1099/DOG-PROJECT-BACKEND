@@ -28,7 +28,7 @@ app.get("/", cors(), async (req, res) => {
   });
   try {
     const newDog = await dog_db_model.save();
-    res.status(201).json(newDog.src);
+    res.status(201).send(newDog.src);
   } catch (error) {
     console.log(error.message);
   }
