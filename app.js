@@ -22,17 +22,20 @@ app.listen(10000, `0.0.0.0`, () => {
 
 app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] }));
 
-const fetchFunc = async () => {
+const fetchFunc = async (fetchedDog) => {
   await fetch("https://dog.ceo/api/breeds/image/random")
     .then((response) => response.json())
     .then((data) => {
-      return data.message;
+      fetchedDog = data.message;
     })
     .catch((err) => console.log(err));
+  return fetchedDog;
 };
 
 app.get("/", cors(), async (req, res) => {
-  let fetchedDog = await fetchFunc();
+  let fetchedDog;
+  fetchedDog = await fetchFunc(fetchedDog);
+  console.log(fetchedDog);
   try {
     const dog_db_model = new DOGDB({
       src: fetchedDog,
