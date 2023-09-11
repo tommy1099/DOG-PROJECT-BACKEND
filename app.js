@@ -32,7 +32,7 @@ const fetchFunc = async () => {
 };
 
 app.get("/", cors(), async (req, res) => {
-  let fetchedDog = await fetchFunc;
+  let fetchedDog = await fetchFunc();
   try {
     const dog_db_model = new DOGDB({
       src: fetchedDog,
