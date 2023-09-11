@@ -4,8 +4,13 @@ const mongoose = require("mongoose");
 const DOGDB = require("./model");
 const cors = require("cors");
 app.use(express.json());
-
-mongoose.connect("mongodb+srv://tommy:1099@hacker-man.mqkqw8a.mongodb.net/DOG");
+try {
+  mongoose.connect(
+    "mongodb+srv://tommy:1099@hacker-man.mqkqw8a.mongodb.net/DOG"
+  );
+} catch (error) {
+  console.log(error);
+}
 const db = mongoose.connection;
 db.on("error", (err) => console.log(err));
 db.once("open", () => console.log("Connected to DB"));
