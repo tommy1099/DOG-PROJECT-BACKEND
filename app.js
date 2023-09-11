@@ -17,16 +17,12 @@ app.listen(10000, `0.0.0.0`, () => {
 app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] }));
 app.get("/", cors(), async (req, res) => {
   const newDogSrc = await fetchMoreDogs();
-  allDogsDB = await DOGDB.find();
-  allDogsDB.forEach((element) => {
-    DBARRAY.push(element.src);
-  });
   res.send(newDogSrc);
 });
 
 const fetchMoreDogs = async () => {
   let newFetchedDog;
-  await fetch("https://dog.ceo/api/breeds/image/random")
+  fetch("https://dog.ceo/api/breeds/image/random")
     .then((response) => response.json())
     .then((data) => {
       newFetchedDog = data.message;
