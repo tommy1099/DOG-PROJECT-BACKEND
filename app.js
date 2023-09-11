@@ -17,16 +17,14 @@ app.listen(10000, `0.0.0.0`, () => {
 app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] }));
 
 app.get("/", cors(), async (req, res) => {
-  let fetchedDog;
   await fetch("https://dog.ceo/api/breeds/image/random")
     .then((response) => response.json())
-    .then((data) => (fetchedDog = data.message))
+    .then((data) => (res.body = data.message))
     .catch((err) => console.log(err));
 
   try {
-    res.body = fetchedDog;
     const dog_db_model = await new DOGDB({
-      src: fetchedDog,
+      src: res.body,
     });
     const newDog = await dog_db_model.save();
     res.status(201).send(newDog.src);
