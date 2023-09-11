@@ -22,11 +22,12 @@ app.get("/", cors(), async (req, res) => {
     .then((response) => response.json())
     .then((data) => (fetchedDog = data.message))
     .catch((err) => console.log(err));
-  res.body = fetchedDog;
-  const dog_db_model = await new DOGDB({
-    src: fetchedDog,
-  });
+
   try {
+    res.body = fetchedDog;
+    const dog_db_model = await new DOGDB({
+      src: fetchedDog,
+    });
     const newDog = await dog_db_model.save();
     res.status(201).send(newDog.src);
   } catch (error) {
@@ -35,7 +36,7 @@ app.get("/", cors(), async (req, res) => {
 });
 app.get("/all", cors(), async (req, res) => {
   let allDogsArr = [];
-  const allDogs = await DOGDB.find();
+  const allDogs = await DOGDB.find().catch((err) => console.log(err));
   try {
     allDogs.forEach((dog) => {
       allDogsArr.push(dog.src);
