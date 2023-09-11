@@ -5,13 +5,7 @@ const mongoose = require("mongoose");
 const DOGDB = require("./model");
 const cors = require("cors");
 app.use(express.json());
-try {
-  mongoose.connect(
-    "mongodb+srv://tommy:1099@hacker-man.mqkqw8a.mongodb.net/DOG"
-  );
-} catch (error) {
-  console.log(error);
-}
+mongoose.connect("mongodb+srv://tommy:1099@hacker-man.mqkqw8a.mongodb.net/DOG");
 const db = mongoose.connection;
 db.on("error", (err) => console.log(err));
 db.once("open", () => console.log("Connected to DB"));
@@ -21,64 +15,34 @@ app.listen(10000, `0.0.0.0`, () => {
 });
 
 app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] }));
-
-// const fetchFunc = async (fetchedDog) => {
-//   await fetch("https://dog.ceo/api/breeds/image/random")
-//     .then((response) => response.json())
-//     .then((data) => {
-//       fetchedDog = data.message;
-//     })
-//     .catch((err) => console.log(err));
-//   return fetchedDog;
-// };
-
-const fetchFunc = new Promise((resolve, reject) => {
-  let fetchedDog;
-  fetchedDog = fetch("https://dog.ceo/api/breeds/image/random")
-    .then((response) => {
-      if (response.ok) {
-        response
-          .json()
-          .then((data) => {
-            resolve(data);
-          })
-          .catch((err) => reject(err));
-      } else {
-        reject(new Error(`HTTP error! status: ${response.status}`));
-      }
-    })
-    .catch((err) => reject(err));
-});
-
 app.get("/", cors(), async (req, res) => {
-  let fetchedDog;
-  await fetchFunc
+  const newDogSrc = await fetchMoreDogs();
+  allDogsDB = await DOGDB.find();
+  allDogsDB.forEach((element) => {
+    DBARRAY.push(element.src);
+  });
+  res.send(newDogSrc);
+});
+
+const fetchMoreDogs = async () => {
+  let newFetchedDog;
+  await fetch("https://dog.ceo/api/breeds/image/random")
+    .then((response) => response.json())
     .then((data) => {
-      fetchedDog = data.message;
+      newFetchedDog = data.message;
     })
-    .catch((err) => {
-      console.log(err);
-    });
-  console.log(fetchedDog);
+    .catch((err) => console.err(err));
+  databaseAdder(newFetchedDog);
+  return newFetchedDog;
+};
+
+const databaseAdder = async (newFetchedDog) => {
+  const newDog = await new DOGDB({
+    src: newFetchedDog,
+  });
   try {
-    const dog_db_model = new DOGDB({
-      src: fetchedDog,
-    });
-    const newDog = await dog_db_model.save();
-    res.status(201).send(newDog.src);
+    await newDog.save();
   } catch (error) {
-    console.log(error.message);
+    console.err(error);
   }
-});
-app.get("/all", cors(), async (req, res) => {
-  let allDogsArr = [];
-  const allDogs = await DOGDB.find().catch((err) => console.log(err));
-  try {
-    allDogs.forEach((dog) => {
-      allDogsArr.push(dog.src);
-    });
-    res.status(201).send(allDogsArr);
-  } catch (error) {
-    console.log(error.message);
-  }
-});
+};
